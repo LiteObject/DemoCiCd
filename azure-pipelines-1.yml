@@ -15,6 +15,13 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+
+- task: BatchScript@1
+  displayName: 'Run a batch file'
+  inputs:
+    filename: 'test.bat'
+    failOnStandardError: true
+
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
