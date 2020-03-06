@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: Default
 
 variables:
   solution: '**/*.sln'
@@ -40,20 +40,28 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: PublishSymbols@2
-  displayName: 'Publish Symbols'
-  inputs:
-    SearchPattern: '**\bin\**\*.pdb'
-    PublishSymbols: false
+#- task: PublishSymbols@2
+#  displayName: 'Publish Symbols'
+#  inputs:
+#    SearchPattern: '**\bin\**\*.pdb'
+#    PublishSymbols: false
 
-- task: CopyFiles@2
-  displayName: 'Copy Files'
+#- task: CopyFiles@2
+#  displayName: 'Copy Files'
+#  inputs:
+#    Contents: '**'
+#    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: DotNetCoreCLI@2
+  displayName: "Publish"
   inputs:
-    Contents: '**'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    command: 'publish'
+    publishWebProjects: true
+    arguments: '-r win-x64 --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    zipAfterPublish: true
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Build Artifacts'
+  displayName: 'Upload Artifacts'
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
